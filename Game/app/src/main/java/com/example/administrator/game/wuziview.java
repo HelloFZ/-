@@ -1,6 +1,8 @@
 package com.example.administrator.game;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -13,9 +15,15 @@ public class wuziview extends View {
     public wuziview(Context context) {
         this(context,null);
     }
-
     public wuziview(Context context, AttributeSet attrs) {
         this(context, attrs,0);
 
     }
-}
+    public wuziview(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+
+    }
+    }
+
+
+
