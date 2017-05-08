@@ -2,6 +2,7 @@ package com.example.administrator.game;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -35,7 +36,7 @@ public class wuziview extends View {
 
         int width = Math.min(widthSize, heightSize);
 
-        //解决嵌套在ScrollView中时等情况出现的问题
+
         if (widthMode == MeasureSpec.UNSPECIFIED) {
             width = heightSize;
         } else if (heightMode == MeasureSpec.UNSPECIFIED) {
@@ -45,7 +46,14 @@ public class wuziview extends View {
         setMeasuredDimension(width, width);
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
     }
+
+
+}
 
 
 
