@@ -6,9 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/5/2 0007.
@@ -26,9 +29,26 @@ public class wuziview extends View {
    // private int mPanelLineColor;    //棋盘线的颜色
     private Paint mPaint = new Paint();
 
+    private ArrayList<Point> mWhitePieceArray = new ArrayList<>();
+    //已下的黑棋的列表
+    private ArrayList<Point> mBlackPieceArray = new ArrayList<>();
+
     //棋子占行距的比例
     private final float RATIO_PIECE_OF_LINE_HEIGHT = 3 * 1.0f / 4;
 
+    //是否将要下白棋
+    private boolean mIsWhite = true;
+    //游戏是否结束
+    private boolean mIsGameOver = false;
+
+    private final int INIT_WIN = -1;            //游戏开始时的状态
+    public static final int WHITE_WIN = 0;      //白棋赢
+    public static final int BLACK_WIN = 1;      //黑棋赢
+    public static final int NO_WIN = 2;         //和棋
+
+    private int mGameWinResult = INIT_WIN;      //初始化游戏结果
+
+    //private OnGameStatusChangeListener listener;//游戏状态监听器
     public wuziview(Context context) {
         this(context,null);
     }
@@ -113,6 +133,8 @@ public class wuziview extends View {
         }
 
     }
+
+    
 
 
 }
