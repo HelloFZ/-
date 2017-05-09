@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -134,7 +135,35 @@ public class wuziview extends View {
 
     }
 
-    
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mIsGameOver) {
+            return false;
+        }
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+            Point p = getValidPoint(x, y);
+            if (mWhitePieceArray.contains(p) || mBlackPieceArray.contains(p)) {
+                return false;
+            }
+
+            if (mIsWhite) {
+                mWhitePieceArray.add(p);
+            } else {
+                mBlackPieceArray.add(p);
+            }
+            invalidate();
+            mIsWhite = !mIsWhite;
+            return true;
+        }
+        return true;
+    }
+
+    //根据触摸点获取最近的格子位置
+    private Point getValidPoint(int x, int y) {
+        return new Point((int)(x / mLineHeight),(int)(y / mLineHeight));
+    }
 
 
 }
