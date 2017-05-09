@@ -115,7 +115,7 @@ public class wuziview extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawBoard(canvas);
-
+        drawPiece(canvas);
     }
 
 
@@ -135,7 +135,27 @@ public class wuziview extends View {
 
     }
 
+    //绘制棋子
+    private void drawPiece(Canvas canvas) {
+        //先绘制白棋
+        for (int i = 0,n = mWhitePieceArray.size();i < n;i++) {
+            Point whitePoint = mWhitePieceArray.get(i);
+            canvas.drawBitmap(mWhitePiece,
+                    (whitePoint.x + (1 -RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight,
+                    (whitePoint.y + (1 -RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight,null);
+        }
+        //后绘制黑棋
+        for (int i = 0,n = mBlackPieceArray.size();i < n;i++) {
+            Point blackPoint = mBlackPieceArray.get(i);
+            canvas.drawBitmap(mBlackPiece,
+                    (blackPoint.x + (1 -RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight,
+                    (blackPoint.y + (1 -RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight,null);
+        }
+    }
+
+
     @Override
+    //Touch事件
     public boolean onTouchEvent(MotionEvent event) {
         if (mIsGameOver) {
             return false;
@@ -144,7 +164,7 @@ public class wuziview extends View {
             int x = (int) event.getX();
             int y = (int) event.getY();
             Point p = getValidPoint(x, y);
-            if (mWhitePieceArray.contains(p) || mBlackPieceArray.contains(p)) {
+            if (mWhitePieceArray.contains(p) || mBlackPieceArray.contains(p)) {//如果这个点已经下了棋子，那么不会做出反应
                 return false;
             }
 
@@ -153,7 +173,7 @@ public class wuziview extends View {
             } else {
                 mBlackPieceArray.add(p);
             }
-            invalidate();
+            invalidate();//刷新页面
             mIsWhite = !mIsWhite;
             return true;
         }
