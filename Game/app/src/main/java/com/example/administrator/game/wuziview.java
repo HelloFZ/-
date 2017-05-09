@@ -116,6 +116,9 @@ public class wuziview extends View {
         super.onDraw(canvas);
         drawBoard(canvas);
         drawPiece(canvas);
+        //每落一个棋子,就要进行逻辑判断，游戏是否结束
+        checkGameOver();
+
     }
 
 
@@ -184,6 +187,30 @@ public class wuziview extends View {
     private Point getValidPoint(int x, int y) {
         return new Point((int)(x / mLineHeight),(int)(y / mLineHeight));
     }
+
+    //逻辑判断实现的函数
+    private void checkGameOver() {
+        boolean whiteWin = checkFiveInLine(mWhitePieceArray);
+        boolean blackWin = checkFiveInLine(mBlackPieceArray);
+        boolean noWin = checkNoWin(whiteWin,blackWin);
+        //如果游戏结束,获取游戏结果mGameWinResult
+        if (whiteWin) {
+            mGameWinResult = WHITE_WIN;
+        } else if (blackWin) {
+            mGameWinResult = BLACK_WIN;
+        } else if(noWin){
+            mGameWinResult = NO_WIN;
+        }
+        if (whiteWin || blackWin || noWin) {
+            mIsGameOver = true;
+            //回调游戏状态接口
+            if (listener != null) {
+                listener.onGameOver(mGameWinResult);
+            }
+        }
+    }
+
+    
 
 
 }
