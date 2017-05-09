@@ -13,6 +13,7 @@
         android:id="@+id/wuziview"
         android:background="@mipmap/panel_bg"
         android:layout_centerInParent="true"
+
         />
 
 </RelativeLayout>
