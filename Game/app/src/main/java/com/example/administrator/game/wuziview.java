@@ -53,6 +53,10 @@ public class wuziview extends View {
     private int mGameWinResult = INIT_WIN;      //初始化游戏结果
 
     private OnGameStatusChangeListener listener;//游戏状态监听器
+    //设置游戏状态监听器
+    public void setOnGameStatusChangeListener(OnGameStatusChangeListener listener) {
+        this.listener = listener;
+    }
     public wuziview(Context context) {
         this(context,null);
     }
@@ -383,6 +387,15 @@ public class wuziview extends View {
             return;
         }
         super.onRestoreInstanceState(state);
+    }
+
+    //重新开始游戏
+    public void restartGame() {
+        mWhitePieceArray.clear();
+        mBlackPieceArray.clear();
+        mIsGameOver = false;
+        mGameWinResult = INIT_WIN;
+        invalidate();
     }
 
 
