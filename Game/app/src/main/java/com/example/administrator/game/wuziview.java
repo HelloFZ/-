@@ -2,6 +2,7 @@ package com.example.administrator.game;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
@@ -12,6 +13,12 @@ import android.view.View;
  */
 
 public class wuziview extends View {
+
+    private int MAX_LINE;//棋盘行列数
+    private int mPanelLineColor;    //棋盘线的颜色
+    private int MAX_COUNT_IN_LINE;    //多少颗棋子相邻时赢棋
+    private Bitmap mWhitePiece;     //白棋的图片
+    private Bitmap mBlackPiece;     //黑棋的图片
 
     public wuziview(Context context) {
         this(context,null);
