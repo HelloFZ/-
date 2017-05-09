@@ -8,11 +8,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/5/2 0007.
@@ -49,7 +52,7 @@ public class wuziview extends View {
 
     private int mGameWinResult = INIT_WIN;      //初始化游戏结果
 
-    //private OnGameStatusChangeListener listener;//游戏状态监听器
+    private OnGameStatusChangeListener listener;//游戏状态监听器
     public wuziview(Context context) {
         this(context,null);
     }
@@ -210,7 +213,177 @@ public class wuziview extends View {
         }
     }
 
-    
+    //检查是否五子连珠
+    private boolean checkFiveInLine(List<Point> points) {
+        for (Point point : points) {
+            int x = point.x;
+            int y = point.y;
+
+            boolean checkHorizontal = checkHorizontalFiveInLine(x,y,points);
+            boolean checkVertical = checkVerticalFiveInLine(x,y,points);
+            boolean checkLeftDiagonal = checkLeftDiagonalFiveInLine(x,y,points);
+            boolean checkRightDiagonal = checkRightDiagonalFiveInLine(x,y,points);
+            if (checkHorizontal || checkVertical || checkLeftDiagonal || checkRightDiagonal) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //检查向右斜的线上有没有相同棋子的五子连珠
+    private boolean checkRightDiagonalFiveInLine(int x, int y, List<Point> points) {
+        int count = 1;
+        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+            if (points.contains(new Point(x - i, y - i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) {
+            return true;
+        }
+        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+            if (points.contains(new Point(x + i, y + i))) {
+                count++;
+            } else {
+                break;
+            }
+
+        }
+        if (count == MAX_COUNT_IN_LINE) {
+            return true;
+        }
+        return false;
+    }
+
+    //检查向左斜的线上有没有相同棋子的五子连珠
+    private boolean checkLeftDiagonalFiveInLine(int x, int y, List<Point> points) {
+        int count = 1;
+        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+            if (points.contains(new Point(x - i, y + i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) {
+            return true;
+        }
+        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+            if (points.contains(new Point(x + i, y - i))) {
+                count++;
+            } else {
+                break;
+            }
+
+        }
+        if (count == MAX_COUNT_IN_LINE) {
+            return true;
+        }
+        return false;
+    }
+
+    //检查竖线上有没有相同棋子的五子连珠
+    private boolean checkVerticalFiveInLine(int x, int y, List<Point> points) {
+        int count = 1;
+        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+            if (points.contains(new Point(x, y + i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) {
+            return true;
+        }
+        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+            if (points.contains(new Point(x, y - i))) {
+                count++;
+            } else {
+                break;
+            }
+
+        }
+        if (count == MAX_COUNT_IN_LINE) {
+            return true;
+        }
+        return false;
+    }
+
+    //检查横线上有没有相同棋子的五子连珠
+    private boolean checkHorizontalFiveInLine(int x, int y, List<Point> points) {
+        int count = 1;
+        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+            if (points.contains(new Point(x - i, y))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) {
+            return true;
+        }
+        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+            if (points.contains(new Point(x + i, y))) {
+                count++;
+            } else {
+                break;
+            }
+
+        }
+        if (count == MAX_COUNT_IN_LINE) {
+            return true;
+        }
+        return false;
+    }
+
+    //检查是否和棋
+    private boolean checkNoWin(boolean whiteWin, boolean blackWin) {
+        if (whiteWin || blackWin) {
+            return false;
+        }
+        int maxPieces = MAX_LINE * MAX_LINE;
+        //如果白棋和黑棋的总数等于棋盘格子数,说明和棋
+        if (mWhitePieceArray.size() + mBlackPieceArray.size() == maxPieces) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 当View被销毁时需要保存游戏数据
+     */
+    private static final String INSTANCE = "instance";
+    private static final String INSTANCE_GAME_OVER = "instance_game_over";
+    private static final String INSTANCE_WHITE_ARRAY = "instance_white_array";
+    private static final String INSTANCE_BLACK_ARRAY = "instance_black_array";
+
+    //保存游戏数据
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(INSTANCE,super.onSaveInstanceState());
+        bundle.putBoolean(INSTANCE_GAME_OVER, mIsGameOver);
+        bundle.putParcelableArrayList(INSTANCE_WHITE_ARRAY, mWhitePieceArray);
+        bundle.putParcelableArrayList(INSTANCE_BLACK_ARRAY, mBlackPieceArray);
+        return bundle;
+    }
+
+    //恢复游戏数据
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            mIsGameOver = bundle.getBoolean(INSTANCE_GAME_OVER);
+            mWhitePieceArray = bundle.getParcelableArrayList(INSTANCE_WHITE_ARRAY);
+            mBlackPieceArray = bundle.getParcelableArrayList(INSTANCE_BLACK_ARRAY);
+            super.onRestoreInstanceState(bundle.getParcelable(INSTANCE));
+            return;
+        }
+        super.onRestoreInstanceState(state);
+    }
 
 
 }
